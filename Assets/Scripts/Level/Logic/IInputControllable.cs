@@ -2,9 +2,9 @@
 
 namespace Assets.Scripts.Level.Logic
 {
-    public interface IInputControlledEntity
+    public interface IInputControllable
     {
         void SetControlVector(Vector2 vector);
-        Vector3 GetCurrentWorldPosition();
+        Vector2 GetCurrentPosition();
     }
 }
