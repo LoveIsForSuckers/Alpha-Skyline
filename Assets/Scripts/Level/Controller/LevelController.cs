@@ -1,41 +1,42 @@
-﻿using Assets.Scripts.Level.Data;
+﻿using Assets.Scripts.Level.Controller.Internal;
 using Assets.Scripts.Level.Data.Entity;
 using Assets.Scripts.Level.Logic;
 using Assets.Scripts.Level.View;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts.Level.Controller
 {
-    public class LevelMainController
+    public class LevelController
     {
-        public static LevelMainController Instance { get; private set; }
+        public static LevelController Instance { get; private set; }
 
-        public MovementController movementController;
+        public MovementController Movement { get; private set; }
+        public WeaponController Weapon { get; private set; }
+        public ProjectileController Projectile { get; private set; }
 
-        public LevelMainController()
+        public LevelController()
         {
             if (Instance != null)
-                throw new InvalidOperationException("LevelMainController already exists");
+                throw new InvalidOperationException("LevelController already exists");
 
             Instance = this;
 
             InitControllers();
             InitPlayer();
         }
-
+        
         private void InitControllers()
         {
-            movementController = new MovementController();
+            Movement = new MovementController();
+            Weapon = new WeaponController();
+            Projectile = new ProjectileController();
         }
 
         private void InitPlayer()
         {
             var entity = new InputControlledEntity();
-            var moveData = movementController.RegisterMovable(entity);
+            var moveData = Movement.Register(entity);
 
             var view = Transform.FindObjectOfType<PlayerShipView>();
             view.Init(entity);

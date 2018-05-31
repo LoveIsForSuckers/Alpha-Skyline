@@ -2,11 +2,11 @@
 using Assets.Scripts.Level.Data.Entity;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Level.Controller
+namespace Assets.Scripts.Level.Controller.Internal
 {
     public class MovementController
     {
-        private const int DEFAULT_POOL_SIZE = 50;
+        private const int DEFAULT_POOL_SIZE = 150;
 
         private Queue<MovementData> _pooledMovements;
         private List<MovementData> _activeMovements;
@@ -19,21 +19,21 @@ namespace Assets.Scripts.Level.Controller
                 _pooledMovements.Enqueue(new MovementData());
         }
 
-        public MovementData RegisterMovable(FieldEntity entity)
+        public MovementData Register(FieldEntity entity)
         {
             var data = GetMovementData();
-            entity.movement = data;
+            entity.Movement = data;
             _activeMovements.Add(data);
             return data;
         }
 
-        public void UnregisterMovable(FieldEntity entity)
+        public void Unregister(FieldEntity entity)
         {
-            var data = entity.movement;
+            var data = entity.Movement;
             data.Clear();
             _activeMovements.Remove(data);
             _pooledMovements.Enqueue(data);
-            entity.movement = null;
+            entity.Movement = null;
         }
 
         private MovementData GetMovementData()

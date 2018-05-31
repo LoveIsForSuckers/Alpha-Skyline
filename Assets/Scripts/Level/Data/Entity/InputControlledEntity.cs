@@ -7,16 +7,16 @@ namespace Assets.Scripts.Level.Data.Entity
     {
         public Vector2 GetCurrentPosition()
         {
-            if (movement != null)
-                return movement.Position;
+            if (Movement != null)
+                return Movement.Position;
             else
                 return Vector2.zero;
         }
 
         public void SetControlVector(Vector2 vector)
         {
-            if (movement != null)
-                movement.Direction = vector;
+            if (Movement != null)
+                Movement.Direction = vector;
         }
     }
 }

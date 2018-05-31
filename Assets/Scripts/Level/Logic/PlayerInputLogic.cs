@@ -21,7 +21,7 @@ namespace Assets.Scripts.Level.Logic
 
         private void Awake()
         {
-            new LevelMainController(); // TODO: hack for now, need LevelMainBehaviour
+            new LevelController(); // TODO: hack for now, need LevelMainBehaviour
 
             var aspect = _camera.aspect;
             var size = _camera.orthographicSize;
@@ -52,7 +52,7 @@ namespace Assets.Scripts.Level.Logic
                 entity.SetControlVector(Vector2.zero);
             }
 
-            LevelMainController.Instance.movementController.Update(Time.deltaTime); // TODO: hack for now, need LevelMainBehaviour
+            LevelController.Instance.Movement.Update(Time.deltaTime); // TODO: hack for now, need LevelMainBehaviour
         }
     }
 }

@@ -17,9 +17,9 @@ namespace Assets.Scripts.Level.View
 
         public void Update()
         {
-            transform.localPosition = _data.movement.Position;
-            DEBUG_DIRECTION = _data.movement.Direction;
-            DEBUG_POSITION = _data.movement.Position;
+            transform.localPosition = _data.Movement.Position;
+            DEBUG_DIRECTION = _data.Movement.Direction;
+            DEBUG_POSITION = _data.Movement.Position;
         }
     }
 }
