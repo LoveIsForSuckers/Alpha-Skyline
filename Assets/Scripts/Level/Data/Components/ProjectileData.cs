@@ -1,29 +1,39 @@
-﻿namespace Assets.Scripts.Level.Data.Components
+﻿using System;
+
+namespace Assets.Scripts.Level.Data.Components
 {
     public class ProjectileData
     {
-        private float _lifetime = 0;
         private float _baseDamage = 0;
         private float _damageVariance = 0;
         private bool _destroyOnImpact = true;
+        private float _maxLifetime = 0;
+        private float _lifetime = 0;
 
         public void Load(ProjectileData otherData)
         {
-            _lifetime = otherData._lifetime;
             _baseDamage = otherData._baseDamage;
             _damageVariance = otherData._damageVariance;
             _destroyOnImpact = otherData._destroyOnImpact;
+            _maxLifetime = otherData._maxLifetime;
+            _lifetime = otherData._lifetime;
+        }
+
+        public void Update(float deltaTime)
+        {
+            _lifetime += deltaTime;
         }
 
         public void Clear()
         {
-            _lifetime = _baseDamage = _damageVariance = 0;
+            _baseDamage = _damageVariance = _lifetime = _maxLifetime = 0;
             _destroyOnImpact = true;
         }
-
-        public float Lifetime { get { return _lifetime; } set { _lifetime = value; } }
+        
         public float BaseDamage { get { return _baseDamage; } set { _baseDamage = value; } }
         public float DamageVariance { get { return _damageVariance; } set { _damageVariance = value; } }
+        public float Lifetime { get { return _lifetime; } set { _lifetime = value; } }
+        public float MaxLifetime { get { return _maxLifetime; } set { _maxLifetime = value; } }
         public bool DestroyOnImpact { get { return _destroyOnImpact; } set { _destroyOnImpact = value; } }
     }
 }

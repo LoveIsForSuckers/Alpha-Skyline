@@ -804,6 +804,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _material: {fileID: 2100000, guid: 535db483f8a50aa48883c7032bbe5173, type: 2}
   _scrollSpeed: 0.1
+--- !u!1 &1449170062
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1449170063}
+  m_Layer: 0
+  m_Name: ProjectileLayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1449170063
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1449170062}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1624029510}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1484784715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1098,8 +1126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61ffcc5c658556545b930e0e2055fd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DEBUG_DIRECTION: {x: 0, y: 0}
-  DEBUG_POSITION: {x: 0, y: 0}
 --- !u!1 &1596644425
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1624029510}
   - component: {fileID: 1624029511}
+  - component: {fileID: 1624029512}
   m_Layer: 0
   m_Name: Field
   m_TagString: Untagged
@@ -1196,6 +1223,7 @@ Transform:
   m_Children:
   - {fileID: 2106926907}
   - {fileID: 1992187084}
+  - {fileID: 1449170063}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1211,6 +1239,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 519420031}
+--- !u!114 &1624029512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1624029509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d543640268630143802a77458e13b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 1061518523273040, guid: 70c24418a32b55841ba69ff0c6c82439,
+    type: 2}
+  projectileLayer: {fileID: 1449170063}
 --- !u!1 &1662667141
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,7 +1508,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1992187083}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1567643857}
@@ -1640,8 +1682,8 @@ ParticleSystemRenderer:
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
-  m_MinParticleSize: 0.15
-  m_MaxParticleSize: 0.15
+  m_MinParticleSize: 0.01
+  m_MaxParticleSize: 0.01
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2

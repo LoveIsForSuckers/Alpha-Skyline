@@ -52,7 +52,7 @@ namespace Assets.Scripts.Level.Logic
                 entity.SetControlVector(Vector2.zero);
             }
 
-            LevelController.Instance.Movement.Update(Time.deltaTime); // TODO: hack for now, need LevelMainBehaviour
+            LevelController.Instance.Update(Time.deltaTime); // TODO: hack for now, need LevelMainBehaviour
         }
     }
 }

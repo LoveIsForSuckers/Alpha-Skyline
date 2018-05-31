@@ -48,7 +48,7 @@ namespace Assets.Scripts.Level.Controller.Internal
         private void OnFired(WeaponData data)
         {
             var position = data.FirePositionOffset + _weaponOwners[data].Movement.Position;
-            LevelController.Instance.Projectile.CreateProjectile(data.Projectile, position, data.FireDirection);
+            LevelController.Instance.Projectile.CreateProjectile(data.Projectile, position, data.FireDirection, data.FireProjectileSpeed);
         }
     }
 }

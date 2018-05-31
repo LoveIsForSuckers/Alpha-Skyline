@@ -3,7 +3,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Level.View
 {
-    public class PlayerShipView : MonoBehaviour
+    // TODO: Pool these boiz
+
+    public class ProjectileView : MonoBehaviour
     {
         private FieldEntity _data;
 
@@ -15,6 +17,12 @@ namespace Assets.Scripts.Level.View
         public void Update()
         {
             transform.localPosition = _data.Movement.Position;
+        }
+
+        public void Dispose()
+        {
+            _data = null;
+            Destroy(gameObject);
         }
     }
 }

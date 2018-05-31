@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Level.Data.Components;
 using Assets.Scripts.Level.Data.Entity;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +8,17 @@ namespace Assets.Scripts.Level.Controller.Internal
 {
     public class ProjectileController
     {
+        public event Action<FieldEntity> EntityCreated;
+        public event Action<FieldEntity> EntityDestroying;
+
         private const int DEFAULT_POOL_SIZE = 100;
 
         private Queue<FieldEntity> _pool;
-        private List<ProjectileData> _active;
+        private Dictionary<ProjectileData, FieldEntity> _active;
 
         public ProjectileController()
         {
-            _active = new List<ProjectileData>();
+            _active = new Dictionary<ProjectileData, FieldEntity>();
             _pool = new Queue<FieldEntity>(DEFAULT_POOL_SIZE);
 
             for (int i = 0; i < DEFAULT_POOL_SIZE; i++)
@@ -25,21 +29,28 @@ namespace Assets.Scripts.Level.Controller.Internal
             }
         }
 
-        public FieldEntity CreateProjectile(ProjectileData data, Vector2 position, Vector2 direction)
+        public FieldEntity CreateProjectile(ProjectileData data, Vector2 position, Vector2 direction, float speed)
         {
-            var entity = GetEntity();
+            var entity = GetNewEntity();
             entity.Projectile.Load(data);
-            _active.Add(entity.Projectile);
+            _active.Add(entity.Projectile, entity);
 
             var movement = LevelController.Instance.Movement.Register(entity);
             movement.Position = position;
             movement.Direction = direction;
+            movement.Speed = speed;
+
+            if (EntityCreated != null)
+                EntityCreated(entity);
 
             return entity;
         }
-
+        
         public void Unregister(FieldEntity projectileEntity)
         {
+            if (EntityDestroying != null)
+                EntityDestroying(projectileEntity);
+
             var data = projectileEntity.Projectile;
             data.Clear();
             _active.Remove(data);
@@ -49,7 +60,7 @@ namespace Assets.Scripts.Level.Controller.Internal
             _pool.Enqueue(projectileEntity);
         }
 
-        public FieldEntity GetEntity()
+        public FieldEntity GetNewEntity()
         {
             if (_pool.Count > 0)
             {
@@ -65,10 +76,21 @@ namespace Assets.Scripts.Level.Controller.Internal
 
         public void Update(float deltaTime)
         {
-            foreach (var data in _active)
+            // TODO: optimize
+            var expiredProjectiles = new List<FieldEntity>();
+
+            foreach (var kv in _active)
             {
-                // TODO: check collisions here ?
+                var data = kv.Key;
+                data.Update(deltaTime);
+                if (data.Lifetime > data.MaxLifetime)
+                    expiredProjectiles.Add(kv.Value);
             }
+
+            foreach (var entity in expiredProjectiles)
+                Unregister(entity);
+
+            expiredProjectiles.Clear();
         }
     }
 }
