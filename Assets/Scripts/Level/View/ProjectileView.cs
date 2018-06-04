@@ -7,16 +7,26 @@ namespace Assets.Scripts.Level.View
 
     public class ProjectileView : MonoBehaviour
     {
+        [SerializeField]
+        private Transform colliderMarker;
+
         private FieldEntity _data;
 
         public void Init(FieldEntity data)
         {
             _data = data;
+            transform.localPosition = _data.Movement.Position;
+        }
+
+        public void Start()
+        {
+            transform.localPosition = _data.Movement.Position;
         }
 
         public void Update()
         {
             transform.localPosition = _data.Movement.Position;
+            colliderMarker.localScale = Vector3.one * _data.Collision.Radius * 2;
         }
 
         public void Dispose()

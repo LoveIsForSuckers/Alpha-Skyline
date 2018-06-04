@@ -13,7 +13,11 @@ namespace Assets.Scripts.Level.View
         [SerializeField]
         private GameObject projectilePrefab;
         [SerializeField]
+        private GameObject collisionMarkerPrefab;
+        [SerializeField]
         private Transform projectileLayer;
+        [SerializeField]
+        private Transform overlayLayer;
 
         private IDictionary<FieldEntity, ProjectileView> _projectiles = new Dictionary<FieldEntity, ProjectileView>();
 
@@ -40,6 +44,12 @@ namespace Assets.Scripts.Level.View
             _projectiles.Remove(projectileEntity);
 
             projectile.Dispose();
+        }
+
+        public void OnCollisionDetected(FieldEntity entity1, FieldEntity entity2, Vector2 position)
+        {
+            var marker = Instantiate(collisionMarkerPrefab, overlayLayer);
+            marker.transform.localPosition = position;
         }
     }
 }

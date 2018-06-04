@@ -29,16 +29,15 @@ namespace Assets.Scripts.Level.Controller.Internal
             }
         }
 
-        public FieldEntity CreateProjectile(ProjectileData data, Vector2 position, Vector2 direction, float speed)
+        // TODO: oh boi we need factories everywhere
+        public FieldEntity CreateProjectile(ProjectileData data)
         {
             var entity = GetNewEntity();
             entity.Projectile.Load(data);
             _active.Add(entity.Projectile, entity);
 
-            var movement = LevelController.Instance.Movement.Register(entity);
-            movement.Position = position;
-            movement.Direction = direction;
-            movement.Speed = speed;
+            LevelController.Instance.Movement.Register(entity);
+            LevelController.Instance.Collision.Register(entity);
 
             if (EntityCreated != null)
                 EntityCreated(entity);
@@ -88,7 +87,10 @@ namespace Assets.Scripts.Level.Controller.Internal
             }
 
             foreach (var entity in expiredProjectiles)
+            {
                 Unregister(entity);
+                LevelController.Instance.Collision.Unregister(entity);
+            }
 
             expiredProjectiles.Clear();
         }

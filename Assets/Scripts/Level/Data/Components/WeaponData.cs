@@ -6,8 +6,6 @@ namespace Assets.Scripts.Level.Data.Components
 {
     public class WeaponData
     {
-        public event Action<WeaponData> Fired;
-        
         private ProjectileData _projectile = null;
         private Vector2 _firePositionOffset = Vector2.zero;
         private Vector2 _fireDirection = Vector2.zero;
@@ -18,18 +16,11 @@ namespace Assets.Scripts.Level.Data.Components
         public void Update(float deltaTime)
         {
             _timeSinceLastShot += deltaTime;
-
-            if (_timeSinceLastShot > _rateOfFire)
-            {
-                DispatchFired();
-                _timeSinceLastShot = 0;
-            }
         }
 
-        private void DispatchFired()
+        public void OnFired()
         {
-            if (Fired != null)
-                Fired(this);
+            _timeSinceLastShot = 0;
         }
 
         public void Clear()
@@ -40,7 +31,9 @@ namespace Assets.Scripts.Level.Data.Components
         }
 
         public bool IsCleared { get { return _projectile == null && _rateOfFire == 0; } }
-        
+
+        public bool IsCanFire { get { return _timeSinceLastShot >= _rateOfFire; } }
+
         public ProjectileData Projectile { get { return _projectile; } set { _projectile = value; } }
         public float RateOfFire { get { return _rateOfFire; } set { _rateOfFire = value > 0 ? value : 0; } }
         public float FireProjectileSpeed { get { return _fireProjectileSpeed; } set { _fireProjectileSpeed = value > 0 ? value : 0; } }

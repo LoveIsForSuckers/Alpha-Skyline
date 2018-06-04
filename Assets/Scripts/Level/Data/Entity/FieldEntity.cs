@@ -8,6 +8,7 @@ namespace Assets.Scripts.Level.Data.Entity
         public List<WeaponData> Weapons { get; private set; }
         public MovementData Movement { get; set; }
         public ProjectileData Projectile { get; set; }
+        public CollisionData Collision { get; set; }
 
         public FieldEntity()
         {

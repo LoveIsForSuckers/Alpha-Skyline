@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Level.View
 {
-    public class PlayerShipView : MonoBehaviour
+    public class EnemyShipView : MonoBehaviour
     {
         [SerializeField]
         private Transform colliderMarker;
