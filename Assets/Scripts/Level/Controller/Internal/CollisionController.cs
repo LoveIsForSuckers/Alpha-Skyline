@@ -67,7 +67,7 @@ namespace Assets.Scripts.Level.Controller.Internal
 
                 foreach (var collision2 in _active)
                 {
-                    if (checkedCollisions[collision1].Contains(collision2) || checkedCollisions[collision2].Contains(collision1))
+                    if (collision1 == collision2 || checkedCollisions[collision1].Contains(collision2) || checkedCollisions[collision2].Contains(collision1))
                         continue;
 
                     checkedCollisions[collision1].Add(collision2);
@@ -76,13 +76,13 @@ namespace Assets.Scripts.Level.Controller.Internal
 
                     if (CheckNonCollidable(entity1, entity2))
                         continue;
-                    
-                    CheckCollision(entity1, entity2);
+
+                    CheckCollision(entity1, entity2, deltaTime);
                 }
             }
         }
 
-        private void CheckCollision(FieldEntity entity1, FieldEntity entity2)
+        private void CheckCollision(FieldEntity entity1, FieldEntity entity2, float deltaTime)
         {
             // Check here for algorithm explanation:
             // https://www.gamasutra.com/view/feature/131424/pool_hall_lessons_fast_accurate_.php?page=2
@@ -94,53 +94,43 @@ namespace Assets.Scripts.Level.Controller.Internal
             var collision2 = entity2.Collision;
 
             // 0. movementVector calculation in movement1 space (so movement1 is 'static')
-            var movementVector = movement2.Direction * movement2.Speed - movement1.Direction * movement1.Speed;
-            var movementDistance = movementVector.magnitude;
+            var movementVector = (movement2.Direction * movement2.Speed - movement1.Direction * movement1.Speed);
+            var movementDistance = movementVector.magnitude * deltaTime;
 
             // 1. distance check
             var currentDistance = Vector2.Distance(movement1.Position, movement2.Position);
             var radiusSum = collision1.Radius + collision2.Radius;
             if (movementDistance < currentDistance - radiusSum)
                 return;
-
-            // 2. current position check
-            Vector2 collisionPosition;
-            if (currentDistance < radiusSum)
-            {
-                collisionPosition = Vector2.Lerp(movement1.Position, movement2.Position, 0.5f); // TODO: 0.5f might be inaccurate
-                OnCollisionDetected(entity1, entity2, collisionPosition);
-                return;
-            }
-
-            // 3. move direction check
+            
+            // 2. move direction check
             var normalizedMovementVector = movementVector.normalized;
-            var from1To2Vector = movement2.Position - movement1.Position;
-            //var dotProduct = Vector2.Dot(normalizedMovementVector, from1To2Vector);
+            var from1To2Vector = movement1.Position - movement2.Position;
             var dotProduct = Vector2.Dot(from1To2Vector, normalizedMovementVector);
             if (dotProduct <= 0) // moving away
                 return;
 
-            // 4. escape check
+            // 3. escape check
             var from1To2VectorSqrMag = from1To2Vector.sqrMagnitude;
             var futureCentersYSqrMag = from1To2VectorSqrMag - dotProduct * dotProduct;
             if (futureCentersYSqrMag >= radiusSum * radiusSum)
                 return;
 
-            // 5. triangle check
+            // 4. triangle check
             var futureCentersXSqrMag = radiusSum * radiusSum - futureCentersYSqrMag;
             if (futureCentersXSqrMag < 0)
                 return;
 
-            // 6. future distance check
+            // 5. future distance check
             var futureDistance = dotProduct - Mathf.Sqrt(futureCentersXSqrMag);
             if (movementDistance < futureDistance)
                 return;
 
-            // 7. collision detected for sure, getting point
+            // 6. collision detected for sure, getting point
             movementVector = movementVector.normalized * futureDistance;
-            movementVector += movement1.Direction * movement1.Speed; // converting back to global space
-            collisionPosition = movement2.Position + movementVector;
-            
+            movementVector += movement1.Direction * movement1.Speed * deltaTime; // converting back to global space
+            var lerpFactor = collision1.Radius / radiusSum;
+            var collisionPosition = Vector2.Lerp(movement1.Position, movement2.Position + movementVector, lerpFactor);
             OnCollisionDetected(entity1, entity2, collisionPosition);
         }
 

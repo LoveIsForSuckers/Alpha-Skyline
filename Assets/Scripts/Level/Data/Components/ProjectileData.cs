@@ -6,17 +6,19 @@ namespace Assets.Scripts.Level.Data.Components
     {
         private float _baseDamage = 0;
         private float _damageVariance = 0;
-        private bool _destroyOnImpact = true;
+        private bool _destroyOnCollision = true;
         private float _maxLifetime = 0;
         private float _lifetime = 0;
 
-        public void Load(ProjectileData otherData)
+        public ProjectileData Load(ProjectileData otherData)
         {
             _baseDamage = otherData._baseDamage;
             _damageVariance = otherData._damageVariance;
-            _destroyOnImpact = otherData._destroyOnImpact;
+            _destroyOnCollision = otherData._destroyOnCollision;
             _maxLifetime = otherData._maxLifetime;
             _lifetime = otherData._lifetime;
+            HadCollision = false;
+            return this;
         }
 
         public void Update(float deltaTime)
@@ -27,13 +29,15 @@ namespace Assets.Scripts.Level.Data.Components
         public void Clear()
         {
             _baseDamage = _damageVariance = _lifetime = _maxLifetime = 0;
-            _destroyOnImpact = true;
+            _destroyOnCollision = true;
+            HadCollision = false;
         }
         
         public float BaseDamage { get { return _baseDamage; } set { _baseDamage = value; } }
         public float DamageVariance { get { return _damageVariance; } set { _damageVariance = value; } }
         public float Lifetime { get { return _lifetime; } set { _lifetime = value; } }
         public float MaxLifetime { get { return _maxLifetime; } set { _maxLifetime = value; } }
-        public bool DestroyOnImpact { get { return _destroyOnImpact; } set { _destroyOnImpact = value; } }
+        public bool DestroyOnCollision { get { return _destroyOnCollision; } set { _destroyOnCollision = value; } }
+        public bool HadCollision { get; set; }
     }
 }

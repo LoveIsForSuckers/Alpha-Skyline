@@ -18,7 +18,7 @@ namespace Assets.Scripts.Level.View
         public void Update()
         {
             transform.localPosition = _data.Movement.Position;
-            colliderMarker.localScale = Vector3.one * _data.Collision.Radius * 2;
+            colliderMarker.localScale = _data.Collision == null ? Vector3.zero : Vector3.one * _data.Collision.Radius * 2;
         }
     }
 }

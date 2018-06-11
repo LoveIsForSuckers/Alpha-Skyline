@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Level.Data.Components;
 using Assets.Scripts.Level.Data.Entity;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.Level.Controller.Internal
 {
@@ -10,6 +12,7 @@ namespace Assets.Scripts.Level.Controller.Internal
 
         private Queue<MovementData> _pooledMovements;
         private List<MovementData> _activeMovements;
+        private Rect _playableAreaBounds;
 
         public MovementController()
         {
@@ -49,5 +52,7 @@ namespace Assets.Scripts.Level.Controller.Internal
             foreach (var data in _activeMovements)
                 data.Update(deltaTime);
         }
+
+        public Rect PlayableAreaBounds { get { return _playableAreaBounds; } set { _playableAreaBounds = value; } }
     }
 }

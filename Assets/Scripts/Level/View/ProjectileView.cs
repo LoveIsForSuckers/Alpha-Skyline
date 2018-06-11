@@ -15,14 +15,8 @@ namespace Assets.Scripts.Level.View
         public void Init(FieldEntity data)
         {
             _data = data;
-            transform.localPosition = _data.Movement.Position;
         }
-
-        public void Start()
-        {
-            transform.localPosition = _data.Movement.Position;
-        }
-
+        
         public void Update()
         {
             transform.localPosition = _data.Movement.Position;

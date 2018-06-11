@@ -6,5 +6,6 @@ namespace Assets.Scripts.Level.Logic
     {
         void SetControlVector(Vector2 vector);
         Vector2 GetCurrentPosition();
+        void SetAllowedToFire(bool value);
     }
 }

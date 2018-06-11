@@ -24,6 +24,7 @@ namespace Assets.Scripts.Level.Controller.Internal
             for (int i = 0; i < DEFAULT_POOL_SIZE; i++)
             {
                 var entity = new FieldEntity();
+                entity.Name = "Proj";
                 entity.Projectile = new ProjectileData();
                 _pool.Enqueue(entity);
             }
@@ -55,6 +56,7 @@ namespace Assets.Scripts.Level.Controller.Internal
             _active.Remove(data);
 
             LevelController.Instance.Movement.Unregister(projectileEntity);
+            LevelController.Instance.Collision.Unregister(projectileEntity);
 
             _pool.Enqueue(projectileEntity);
         }
@@ -68,6 +70,7 @@ namespace Assets.Scripts.Level.Controller.Internal
             else
             {
                 var entity = new FieldEntity();
+                entity.Name = "Proj";
                 entity.Projectile = new ProjectileData();
                 return entity;
             }
@@ -82,14 +85,13 @@ namespace Assets.Scripts.Level.Controller.Internal
             {
                 var data = kv.Key;
                 data.Update(deltaTime);
-                if (data.Lifetime > data.MaxLifetime)
+                if (data.Lifetime > data.MaxLifetime || (data.DestroyOnCollision && data.HadCollision))
                     expiredProjectiles.Add(kv.Value);
             }
 
             foreach (var entity in expiredProjectiles)
             {
                 Unregister(entity);
-                LevelController.Instance.Collision.Unregister(entity);
             }
 
             expiredProjectiles.Clear();

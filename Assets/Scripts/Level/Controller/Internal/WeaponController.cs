@@ -53,7 +53,7 @@ namespace Assets.Scripts.Level.Controller.Internal
                     projectileEntity.Movement.Position = projectilePosition;
                     projectileEntity.Movement.Direction = data.FireDirection;
                     projectileEntity.Movement.Speed = data.FireProjectileSpeed;
-                    projectileEntity.Collision.IsPlayerOwned = weaponOwner.Collision == null ? false : weaponOwner.Collision.IsPlayerOwned;
+                    projectileEntity.Collision.IsPlayerOwned = weaponOwner.Collision == null ? true : weaponOwner.Collision.IsPlayerOwned;
                     projectileEntity.Collision.Radius = 0.1f; // TODO: HACK
                 }
             }

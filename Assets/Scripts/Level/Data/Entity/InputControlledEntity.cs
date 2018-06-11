@@ -18,5 +18,11 @@ namespace Assets.Scripts.Level.Data.Entity
             if (Movement != null)
                 Movement.Direction = vector;
         }
+
+        public void SetAllowedToFire(bool value)
+        {
+            foreach (var weapon in Weapons)
+                weapon.AllowedToFire = value;
+        }
     }
 }

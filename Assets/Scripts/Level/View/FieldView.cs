@@ -50,6 +50,7 @@ namespace Assets.Scripts.Level.View
         {
             var marker = Instantiate(collisionMarkerPrefab, overlayLayer);
             marker.transform.localPosition = position;
+            GameObject.Destroy(marker, 0.5f);
         }
     }
 }
