@@ -32,32 +32,29 @@ namespace Assets.Scripts.Level.Logic
         {
             if (entity == null)
                 return;
+            
+            var targetPos = _camera.ScreenToWorldPoint(Input.mousePosition);
+            targetPos.z = 0;
 
-            //if (Input.GetMouseButton(0))
-            //{
-                var targetPos = _camera.ScreenToWorldPoint(Input.mousePosition);
-                targetPos.z = 0;
-
-                var moveBounds = LevelController.Instance.Movement.PlayableAreaBounds;
+            var moveBounds = LevelController.Instance.Movement.PlayableAreaBounds;
                 
-                targetPos.x = Mathf.Clamp(targetPos.x, moveBounds.xMin, moveBounds.xMax);
-                targetPos.y = Mathf.Clamp(targetPos.y, moveBounds.yMin, moveBounds.yMax);
+            targetPos.x = Mathf.Clamp(targetPos.x, moveBounds.xMin, moveBounds.xMax);
+            targetPos.y = Mathf.Clamp(targetPos.y, moveBounds.yMin, moveBounds.yMax);
 
-                var currentPos = entity.GetCurrentPosition();
-                var controlVector = new Vector2(targetPos.x, targetPos.y) - currentPos;
-                entity.SetControlVector(controlVector);
-            //}
-            //else
-            //{
-            //    entity.SetControlVector(Vector2.zero);
-            //}
+            var normSpeed = (entity as FieldEntity).Movement.Speed * Time.fixedDeltaTime * Time.timeScale;
+                
+            var currentPos = entity.GetCurrentPosition();
+            var controlVector = new Vector2(targetPos.x, targetPos.y) - currentPos;
+            if (controlVector.magnitude < normSpeed)
+                controlVector *= controlVector.magnitude / normSpeed;
+            entity.SetControlVector(controlVector);
 
             entity.SetAllowedToFire(Input.GetMouseButton(0));
         }
 
         private void FixedUpdate()
         {
-            LevelController.Instance.Update(Time.fixedDeltaTime); // TODO: hack for now, need LevelMainBehaviour
+            LevelController.Instance.Update(Time.fixedDeltaTime * Time.timeScale); // TODO: hack for now, need LevelMainBehaviour
         }
     }
 }

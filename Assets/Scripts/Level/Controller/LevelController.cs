@@ -74,7 +74,7 @@ namespace Assets.Scripts.Level.Controller
 
             var moveData = Movement.Register(entity);
             moveData.Position = new Vector2(0, -7);
-            moveData.Speed = 4.0f;
+            moveData.Speed = 20.0f;
 
             var collision = Collision.Register(entity);
             collision.IsPlayerOwned = true;
