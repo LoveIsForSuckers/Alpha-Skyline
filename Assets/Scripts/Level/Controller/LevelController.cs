@@ -18,10 +18,13 @@ namespace Assets.Scripts.Level.Controller
         public WeaponController Weapon { get; private set; }
         public ProjectileController Projectile { get; private set; }
         public CollisionController Collision { get; private set; }
+        public HealthController Health { get; private set; }
 
         public ILevelListener Listener { get; set; }
 
         private List<EnemyController> _enemies;
+
+        private List<FieldEntity> _shipsToRemove;
 
         private bool _isPlaying;
 
@@ -43,8 +46,10 @@ namespace Assets.Scripts.Level.Controller
             Weapon = new WeaponController();
             Projectile = new ProjectileController();
             Collision = new CollisionController();
+            Health = new HealthController();
 
             _enemies = new List<EnemyController>();
+            _shipsToRemove = new List<FieldEntity>();
         }
 
         private void InitEnemy()
@@ -55,10 +60,31 @@ namespace Assets.Scripts.Level.Controller
             var moveData = Movement.Register(entity);
             moveData.Position = new Vector2(4, 4);
             moveData.Speed = 3.0f;
+
             var collision = Collision.Register(entity);
             collision.Radius = 0.5f;
             collision.IsPlayerOwned = false;
 
+            var health = Health.Register(entity);
+            health.Load(30);
+
+            var projectile = new ProjectileData() {
+                BaseDamage = 3,
+                DamageVariance = 1,
+                DestroyOnCollision = true,
+                MaxLifetime = 4.0f
+            };
+
+            var weapon = new WeaponData() {
+                Projectile = projectile,
+                FireProjectileSpeed = 8f,
+                RateOfFire = 2f,
+                FirePositionOffset = new Vector2(0f, -0.6f),
+                FireDirection = new Vector2(0f, -1f)
+            };
+            Weapon.RegisterWeapon(entity, weapon);
+
+            // TODO: view should be not made here but in fieldView
             var view = Transform.FindObjectOfType<EnemyShipView>();
             view.Init(entity);
 
@@ -80,14 +106,17 @@ namespace Assets.Scripts.Level.Controller
             collision.IsPlayerOwned = true;
             collision.Radius = 0.5f;
 
+            var health = Health.Register(entity);
+            health.Load(30);
+
             var projectile = new ProjectileData()
             {
-                BaseDamage = 3, DamageVariance = 1, DestroyOnCollision = false, MaxLifetime = 4.0f
+                BaseDamage = 3, DamageVariance = 1, DestroyOnCollision = true, MaxLifetime = 4.0f
             };
 
             var weapon = new WeaponData()
             {
-                Projectile = projectile, FireProjectileSpeed = 6f, RateOfFire = 4f,
+                Projectile = projectile, FireProjectileSpeed = 19f, RateOfFire = 4f,
                 FirePositionOffset = new Vector2(0f, 0.6f),
                 FireDirection = new Vector2(0f, 1f)
             };
@@ -103,10 +132,41 @@ namespace Assets.Scripts.Level.Controller
             weapon3.FireDirection = new Vector2(-0.12f, 1f);
             Weapon.RegisterWeapon(entity, weapon3);
 
+            // TODO: view should be not made here but in fieldView
             var view = Transform.FindObjectOfType<PlayerShipView>();
             view.Init(entity);
 
             PlayerInputLogic.Instance.entity = entity;
+        }
+
+        // TODO: ship controller ? (this and init)
+        public void RemoveShip(FieldEntity entity) {
+            if ( entity == PlayerInputLogic.Instance.entity ) {
+                PlayerInputLogic.Instance.entity = null;
+                var view = Transform.FindObjectOfType<PlayerShipView>();
+                view.Clear();
+            } else {
+                var enemy = _enemies.Find(x => x.IsThis(entity));
+                if ( enemy != null ) {
+                    enemy.Clear();
+                    _enemies.Remove(enemy);
+                }
+                var view = Transform.FindObjectOfType<EnemyShipView>();
+                view.Clear();
+            }
+
+            if ( entity.Movement != null ) {
+                Movement.Unregister(entity);
+            }
+            if ( entity.Collision != null ) {
+                Collision.Unregister(entity);
+            }
+            if ( entity.Weapons != null ) {
+                Weapon.UnregisterAllWeapons(entity);
+            }
+            if ( entity.Health != null ) {
+                Health.Unregister(entity);
+            }
         }
 
         public void StartPlay()
@@ -117,6 +177,7 @@ namespace Assets.Scripts.Level.Controller
             Projectile.EntityCreated += Listener.OnProjectileCreated;
             Projectile.EntityDestroying += Listener.OnProjectileDestroying;
             Collision.CollisionDetected += OnCollisionDetected;
+            Health.EntityShouldDie += OnEntityShouldDie;
 
             _isPlaying = true;
         }
@@ -129,6 +190,7 @@ namespace Assets.Scripts.Level.Controller
             Projectile.EntityCreated -= Listener.OnProjectileCreated;
             Projectile.EntityDestroying -= Listener.OnProjectileDestroying;
             Collision.CollisionDetected -= OnCollisionDetected;
+            Health.EntityShouldDie -= OnEntityShouldDie;
 
             _isPlaying = false;
         }
@@ -138,6 +200,11 @@ namespace Assets.Scripts.Level.Controller
             if (!_isPlaying || Time.timeScale <= 0)
                 return;
             
+            foreach ( var ship in _shipsToRemove ) {
+                RemoveShip(ship);
+            }
+            _shipsToRemove.Clear();
+
             Movement.Update(deltaTime);
             Weapon.Update(deltaTime);
             Projectile.Update(deltaTime);
@@ -149,13 +216,17 @@ namespace Assets.Scripts.Level.Controller
 
         private void OnCollisionDetected(FieldEntity entity1, FieldEntity entity2, Vector2 position)
         {
-            if (Listener != null)
-                Listener.OnCollisionDetected(entity1, entity2, position);
+            // TODO: stop communicating game logic through events, use update cycle
+            // events should only be used for viewer
+            Projectile.HandleCollision(entity1, entity2);
+            Health.HandleCollision(entity1, entity2);
 
-            if (entity1.Projectile != null)
-                entity1.Projectile.HadCollision = true;
-            else if (entity2.Projectile != null)
-                entity2.Projectile.HadCollision = true;
+            if ( Listener != null )
+                Listener.OnCollisionDetected(entity1, entity2, position);
+        }
+
+        private void OnEntityShouldDie(FieldEntity entity) {
+            _shipsToRemove.Add(entity);
         }
     }
 }

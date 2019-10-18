@@ -29,6 +29,12 @@ namespace Assets.Scripts.Level.Controller.Enemies
 
             if (Vector2.SqrMagnitude(_entity.Movement.Position - _targetPos) < 0.01f)
                 UpdateTarget();
+
+            if ( _entity.Weapons != null ) {
+                foreach ( var weapon in _entity.Weapons ) {
+                    weapon.AllowedToFire = true;
+                }
+            }
         }
 
         private void UpdateTarget()
@@ -41,6 +47,14 @@ namespace Assets.Scripts.Level.Controller.Enemies
                 _targetPos.x = 0.9f * moveBounds.xMin; // assuming xMin < 0
 
             _entity.Movement.Direction = _targetPos - _entity.Movement.Position;
+        }
+
+        public bool IsThis(FieldEntity entity) {
+            return entity == _entity; // TODO: check ids instead?
+        }
+
+        public void Clear() {
+            _entity = null;
         }
     }
 }

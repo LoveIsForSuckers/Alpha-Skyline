@@ -96,5 +96,14 @@ namespace Assets.Scripts.Level.Controller.Internal
 
             expiredProjectiles.Clear();
         }
+
+        public void HandleCollision(FieldEntity entity1, FieldEntity entity2) {
+            if ( entity1.Projectile != null ) {
+                entity1.Projectile.HadCollision = true;
+            }
+            if ( entity2.Projectile != null ) {
+                entity2.Projectile.HadCollision = true;
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Assets.Scripts.Level.Data.Entity
         public MovementData Movement { get; set; }
         public ProjectileData Projectile { get; set; }
         public CollisionData Collision { get; set; }
+        public HealthData Health { get; set; }
 
         public FieldEntity()
         {
@@ -29,6 +30,8 @@ namespace Assets.Scripts.Level.Data.Entity
                 sb.Append('P');
             if (Collision != null)
                 sb.Append('C');
+            if ( Health != null )
+                sb.Append("H" + Health.CurrentHealth);
 
             return sb.ToString();
         }

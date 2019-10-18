@@ -36,6 +36,16 @@ namespace Assets.Scripts.Level.Controller.Internal
                 _weaponOwners.Remove(data);
             }
         }
+
+        public void UnregisterAllWeapons(FieldEntity entity) {
+            foreach ( var data in entity.Weapons ) {
+                data.Clear();
+                _active.Remove(data);
+
+                _weaponOwners.Remove(data);
+            }
+            entity.Weapons.Clear();
+        }
         
         public void Update(float deltaTime)
         {

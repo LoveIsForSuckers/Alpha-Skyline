@@ -6,6 +6,7 @@ namespace Assets.Scripts.Level.Data.Components
 {
     public class WeaponData
     {
+        // TODO: should have not ProjectileData, but ProjectileLibItem instead
         private ProjectileData _projectile = null;
         private Vector2 _firePositionOffset = Vector2.zero;
         private Vector2 _fireDirection = Vector2.zero;

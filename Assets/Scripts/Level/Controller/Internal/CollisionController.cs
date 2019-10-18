@@ -136,7 +136,6 @@ namespace Assets.Scripts.Level.Controller.Internal
 
         private void OnCollisionDetected(FieldEntity entity1, FieldEntity entity2, Vector2 collisionPosition)
         {
-            // TODO: damage recievers logic
             if (CollisionDetected != null)
                 CollisionDetected(entity1, entity2, collisionPosition);
         }
